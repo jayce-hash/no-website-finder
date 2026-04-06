@@ -28,11 +28,11 @@
   }
 
   header {
-    padding: 32px 40px 24px;
+    padding: 28px 40px 22px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: baseline;
-    gap: 16px;
+    gap: 14px;
   }
 
   header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
@@ -49,13 +49,13 @@
     text-transform: uppercase;
   }
 
-  .main { max-width: 900px; margin: 0 auto; padding: 36px 24px; }
+  .main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
 
   .search-bar {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr auto;
     gap: 10px;
-    margin-bottom: 28px;
+    margin-bottom: 16px;
   }
 
   .field { display: flex; flex-direction: column; gap: 6px; }
@@ -78,6 +78,7 @@
     border-radius: 6px;
     outline: none;
     transition: border-color 0.15s;
+    width: 100%;
   }
 
   input:focus { border-color: var(--accent); }
@@ -91,7 +92,7 @@
     font-family: 'Syne', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    padding: 12px 24px;
+    padding: 12px 28px;
     border-radius: 6px;
     cursor: pointer;
     letter-spacing: 0.5px;
@@ -103,19 +104,117 @@
   .btn-search:active { transform: scale(0.97); }
   .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  .category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .cat-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .cat-pill.done {
+    border-color: rgba(68,255,176,0.3);
+    color: var(--success);
+    background: rgba(68,255,176,0.06);
+  }
+
+  .cat-pill.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(240,255,68,0.07);
+  }
+
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .progress-wrap.show { display: block; }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .progress-count { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--accent); font-weight: 500; }
+
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .summary-num {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-num.green { color: var(--success); }
+  .summary-num.yellow { color: var(--accent); }
+  .summary-num.muted { color: var(--muted); }
+
+  .summary-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
   .status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
-    min-height: 28px;
+    margin-bottom: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .status-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
-  .status-text .hl { color: var(--accent); font-weight: 500; }
   .status-text .hl-green { color: var(--success); font-weight: 500; }
+  .status-text .hl { color: var(--accent); font-weight: 500; }
 
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  .filters { display: flex; gap: 6px; }
 
   .filter-btn {
     font-family: 'Syne', sans-serif;
@@ -128,7 +227,6 @@
     color: var(--muted);
     cursor: pointer;
     transition: all 0.15s;
-    letter-spacing: 0.3px;
   }
 
   .filter-btn.active {
@@ -137,33 +235,21 @@
     border-color: var(--accent);
   }
 
-  .progress-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    display: none;
-  }
-
-  .progress-wrap.show { display: block; }
-
-  .progress-label {
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 10px;
-  }
-
-  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-
-  .progress-fill {
-    height: 100%;
+  .export-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
     background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.3s ease;
-    width: 0%;
+    border: none;
+    color: #000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    letter-spacing: 0.3px;
   }
+
+  .export-btn:hover { opacity: 0.85; }
 
   .results-grid { display: flex; flex-direction: column; gap: 8px; }
 
@@ -171,41 +257,65 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 16px 20px;
+    padding: 14px 18px;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 12px;
     align-items: center;
-    transition: border-color 0.15s;
-    animation: slideIn 0.2s ease both;
+    animation: slideIn 0.18s ease both;
   }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .result-card:hover { border-color: #3a3a44; }
-  .result-card.has-website { opacity: 0.35; }
   .result-card.no-website { border-left: 3px solid var(--success); }
+  .result-card.has-website { opacity: 0.28; }
 
-  .biz-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .biz-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .biz-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .biz-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 2px; }
 
-  .biz-type, .biz-rating, .biz-phone {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
+  .biz-cat {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    opacity: 0.75;
   }
 
-  .biz-phone { color: var(--text); }
+  .biz-rating { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .biz-phone { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text); }
+  .biz-address { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
 
-  .biz-address {
+  .copy-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  .btn-copy {
+    font-family: 'Syne', sans-serif;
     font-size: 11px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-top: 3px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
   }
+
+  .btn-copy-text { color: #74d4ff; border-color: rgba(116,212,255,0.25); }
+  .btn-copy-text:hover { background: rgba(116,212,255,0.08); border-color: rgba(116,212,255,0.5); }
+
+  .btn-copy-email { color: #c4a3ff; border-color: rgba(196,163,255,0.25); }
+  .btn-copy-email:hover { background: rgba(196,163,255,0.08); border-color: rgba(196,163,255,0.5); }
+
+  .btn-copy.copied {
+    color: var(--success) !important;
+    border-color: rgba(68,255,176,0.4) !important;
+    background: rgba(68,255,176,0.07) !important;
+  }
+
+  .card-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 
   .tag {
     font-size: 10px;
@@ -214,21 +324,20 @@
     letter-spacing: 1px;
     padding: 3px 8px;
     border-radius: 3px;
+    white-space: nowrap;
   }
 
   .tag-no-website {
-    background: rgba(68, 255, 176, 0.12);
+    background: rgba(68,255,176,0.10);
     color: var(--success);
-    border: 1px solid rgba(68, 255, 176, 0.25);
+    border: 1px solid rgba(68,255,176,0.22);
   }
 
   .tag-has-website {
-    background: rgba(107, 107, 120, 0.12);
+    background: rgba(107,107,120,0.10);
     color: var(--muted);
     border: 1px solid var(--border);
   }
-
-  .card-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 
   .btn-maps {
     font-family: 'Syne', sans-serif;
@@ -248,39 +357,16 @@
 
   .btn-maps:hover { border-color: var(--accent); color: var(--accent); }
 
-  .copy-btns {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-  }
-
-  .btn-copy {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 11px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.3px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .btn-copy-text { color: #74d4ff; border-color: rgba(116, 212, 255, 0.25); }
-  .btn-copy-text:hover { background: rgba(116, 212, 255, 0.08); border-color: rgba(116, 212, 255, 0.5); }
-
-  .btn-copy-email { color: #c4a3ff; border-color: rgba(196, 163, 255, 0.25); }
-  .btn-copy-email:hover { background: rgba(196, 163, 255, 0.08); border-color: rgba(196, 163, 255, 0.5); }
-
-  .btn-copy.copied {
-    color: var(--success) !important;
-    border-color: rgba(68, 255, 176, 0.4) !important;
-    background: rgba(68, 255, 176, 0.07) !important;
+  .error-msg {
+    background: rgba(255,68,102,0.08);
+    border: 1px solid rgba(255,68,102,0.25);
+    color: var(--danger);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 16px;
+    display: none;
   }
 
   .empty-state {
@@ -293,73 +379,13 @@
 
   .empty-icon { font-size: 36px; margin-bottom: 12px; }
 
-  .summary-strip {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 18px;
-  }
-
-  .summary-num {
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .summary-num.green { color: var(--success); }
-  .summary-num.yellow { color: var(--accent); }
-
-  .summary-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    font-weight: 700;
-  }
-
-  .error-msg {
-    background: rgba(255, 68, 102, 0.08);
-    border: 1px solid rgba(255, 68, 102, 0.25);
-    color: var(--danger);
-    border-radius: 6px;
-    padding: 12px 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    margin-bottom: 16px;
-    display: none;
-  }
-
-  .export-btn {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.3px;
-  }
-
-  .export-btn:hover { border-color: var(--accent); color: var(--accent); }
-
   @media (max-width: 600px) {
-    .search-bar { grid-template-columns: 1fr; }
     header { padding: 20px; }
-    .main { padding: 20px 16px; }
+    .main { padding: 20px 14px; }
+    .search-bar { grid-template-columns: 1fr; }
+    .summary-strip { grid-template-columns: repeat(2, 1fr); }
     .result-card { grid-template-columns: 1fr; }
-    .card-actions { flex-direction: row; align-items: center; }
+    .card-actions { flex-direction: row; }
   }
 </style>
 </head>
@@ -371,22 +397,24 @@
 </header>
 
 <div class="main">
+
   <div class="search-bar">
     <div class="field">
-      <label>Business Category</label>
-      <input type="text" id="category" placeholder="e.g. plumber, dentist, gym" />
+      <label>City — we'll run all 15 categories automatically</label>
+      <input type="text" id="city" placeholder="e.g. Gainesville TX" />
     </div>
-    <div class="field">
-      <label>City</label>
-      <input type="text" id="city" placeholder="e.g. Austin TX" />
-    </div>
-    <button class="btn-search" id="searchBtn" onclick="runSearch()">Search →</button>
+    <button class="btn-search" id="searchBtn" onclick="runSearch()">Run All Categories →</button>
   </div>
+
+  <div class="category-list" id="categoryList"></div>
 
   <div class="error-msg" id="errorMsg"></div>
 
   <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label" id="progressLabel">Fetching results…</div>
+    <div class="progress-top">
+      <div class="progress-label" id="progressLabel">Starting…</div>
+      <div class="progress-count" id="progressCount"></div>
+    </div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   </div>
 
@@ -394,26 +422,57 @@
 
   <div class="status-bar" id="statusBar" style="display:none">
     <div class="status-text" id="statusText"></div>
-    <div style="display:flex;gap:8px;align-items:center">
+    <div class="bar-right">
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('no-website', this)">No Website</button>
         <button class="filter-btn" onclick="setFilter('all', this)">All</button>
       </div>
-      <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+      <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
   </div>
 
   <div class="results-grid" id="results">
     <div class="empty-state">
-      <div class="empty-icon">🔍</div>
-      Enter a category and city to find businesses without websites.
+      <div class="empty-icon">🏙️</div>
+      Enter a city and hit Run — we'll search all 15 categories automatically.
     </div>
   </div>
+
 </div>
 
 <script>
+const CATEGORIES = [
+  'roofing contractor',
+  'plumber',
+  'electrician',
+  'HVAC',
+  'landscaping',
+  'lawn care',
+  'painting contractor',
+  'pressure washing',
+  'handyman',
+  'fence company',
+  'auto repair',
+  'car detailing',
+  'barber shop',
+  'nail salon',
+  'cleaning service'
+];
+
 let allResults = [];
 let activeFilter = 'no-website';
+let currentCity = '';
+
+function renderPills(activeIdx = -1, doneIdxs = []) {
+  document.getElementById('categoryList').innerHTML = CATEGORIES.map((c, i) => {
+    let cls = 'cat-pill';
+    if (doneIdxs.includes(i)) cls += ' done';
+    if (i === activeIdx) cls += ' active';
+    return `<span class="${cls}">${c}</span>`;
+  }).join('');
+}
+
+renderPills();
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
@@ -428,84 +487,99 @@ function setFilter(filter, btn) {
   renderResults();
 }
 
-function setProgress(pct, label) {
+function setProgress(pct, label, count) {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = label;
+  document.getElementById('progressCount').textContent = count || '';
 }
 
 async function runSearch() {
-  const category = document.getElementById('category').value.trim();
   const city = document.getElementById('city').value.trim();
-
-  if (!category || !city) { showError('Please enter both a category and a city.'); return; }
+  if (!city) { showError('Please enter a city.'); return; }
 
   showError('');
   allResults = [];
+  currentCity = city;
   document.getElementById('results').innerHTML = '';
   document.getElementById('summaryStrip').style.display = 'none';
   document.getElementById('statusBar').style.display = 'none';
   document.getElementById('progressWrap').classList.add('show');
   document.getElementById('searchBtn').disabled = true;
 
-  setProgress(10, `Searching for "${category}" in ${city}…`);
+  const seenIds = new Set();
+  const doneIdxs = [];
 
-  try {
-    const query = `${category} in ${city}`;
-    const searchResp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(query)}`);
-    const searchData = await searchResp.json();
+  for (let i = 0; i < CATEGORIES.length; i++) {
+    const category = CATEGORIES[i];
+    renderPills(i, doneIdxs);
+    const pct = Math.round((i / CATEGORIES.length) * 85);
+    setProgress(pct, `Searching: ${category} in ${city}…`, `${i + 1} of ${CATEGORIES.length} categories`);
 
-    if (searchData.error) throw new Error(searchData.error);
-    if (searchData.status === 'REQUEST_DENIED') throw new Error('Google API key issue: ' + (searchData.error_message || 'REQUEST_DENIED'));
-    if (searchData.status !== 'OK' && searchData.status !== 'ZERO_RESULTS') throw new Error(`Search failed: ${searchData.status}`);
+    try {
+      const query = `${category} in ${city}`;
+      const searchResp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(query)}`);
+      const searchData = await searchResp.json();
 
-    const places = searchData.results || [];
-    setProgress(30, `Found ${places.length} businesses. Fetching details…`);
+      if (searchData.status === 'REQUEST_DENIED') {
+        showError('Google API key issue: ' + (searchData.error_message || 'REQUEST_DENIED'));
+        break;
+      }
 
-    setProgress(30, `Found ${places.length} businesses. Fetching details…`);
+      const places = (searchData.results || []).filter(p => {
+        if (seenIds.has(p.place_id)) return false;
+        seenIds.add(p.place_id);
+        return true;
+      });
 
-const chunkSize = 10;
-const details = [];
+      if (places.length === 0) { doneIdxs.push(i); continue; }
 
-for (let i = 0; i < places.length; i += chunkSize) {
-  const chunk = places.slice(i, i + chunkSize);
-  const chunkResults = await Promise.all(
-    chunk.map(async (place) => {
-      try {
-        const dResp = await fetch(`/.netlify/functions/details?place_id=${encodeURIComponent(place.place_id)}`);
-        const dData = await dResp.json();
-        return dData.result ? { ...dData.result, place_id: place.place_id } : null;
-      } catch (e) { return null; }
-    })
-  );
-  chunkResults.forEach(r => { if (r) details.push(r); });
-  setProgress(30 + Math.round(((i + chunkSize) / places.length) * 60), `Checked ${Math.min(i + chunkSize, places.length)} of ${places.length}…`);
-}
+      setProgress(pct, `Getting details: ${category}…`, `${i + 1} of ${CATEGORIES.length} categories`);
 
-    setProgress(95, 'Filtering results…');
-    allResults = details.map(d => ({
-      name: d.name,
-      address: d.formatted_address || '',
-      phone: d.formatted_phone_number || '',
-      website: d.website || '',
-      rating: d.rating || null,
-      reviews: d.user_ratings_total || 0,
-      types: (d.types || []).filter(t => t !== 'establishment' && t !== 'point_of_interest').slice(0, 2).join(', ').replace(/_/g, ' '),
-      mapsUrl: d.url || `https://www.google.com/maps/place/?q=place_id:${d.place_id}`,
-      hasWebsite: !!d.website
-    }));
+      const chunkSize = 10;
+      for (let j = 0; j < places.length; j += chunkSize) {
+        const chunk = places.slice(j, j + chunkSize);
+        const chunkResults = await Promise.all(
+          chunk.map(async (place) => {
+            try {
+              const dResp = await fetch(`/.netlify/functions/details?place_id=${encodeURIComponent(place.place_id)}`);
+              const dData = await dResp.json();
+              return dData.result ? { ...dData.result, place_id: place.place_id, category } : null;
+            } catch (e) { return null; }
+          })
+        );
+        chunkResults.forEach(d => {
+          if (!d) return;
+          allResults.push({
+            name: d.name || '',
+            category: d.category || category,
+            address: d.formatted_address || '',
+            phone: d.formatted_phone_number || '',
+            website: d.website || '',
+            rating: d.rating || '',
+            reviews: d.user_ratings_total || 0,
+            types: (d.types || []).filter(t => t !== 'establishment' && t !== 'point_of_interest').slice(0,2).join(', ').replace(/_/g,' '),
+            mapsUrl: d.url || `https://www.google.com/maps/place/?q=place_id:${d.place_id}`,
+            hasWebsite: !!d.website
+          });
+        });
+      }
 
-    setProgress(100, 'Done!');
-    setTimeout(() => {
-      document.getElementById('progressWrap').classList.remove('show');
-      renderSummary();
-      renderResults();
-      document.getElementById('statusBar').style.display = 'flex';
-    }, 400);
+      doneIdxs.push(i);
 
-  } catch (err) {
-    document.getElementById('progressWrap').classList.remove('show');
-    showError(err.message || 'Something went wrong.');
+    } catch (err) {
+      doneIdxs.push(i);
+    }
   }
+
+  renderPills(-1, doneIdxs);
+  setProgress(100, 'All done!', `${allResults.length} businesses found across ${CATEGORIES.length} categories`);
+
+  setTimeout(() => {
+    document.getElementById('progressWrap').classList.remove('show');
+    renderSummary();
+    renderResults();
+    document.getElementById('statusBar').style.display = 'flex';
+  }, 700);
 
   document.getElementById('searchBtn').disabled = false;
 }
@@ -513,58 +587,49 @@ for (let i = 0; i < places.length; i += chunkSize) {
 function renderSummary() {
   const noWeb = allResults.filter(r => !r.hasWebsite).length;
   const hasWeb = allResults.filter(r => r.hasWebsite).length;
+  const cats = new Set(allResults.map(r => r.category)).size;
   const strip = document.getElementById('summaryStrip');
   strip.style.display = 'grid';
   strip.innerHTML = `
-    <div class="summary-card">
-      <div class="summary-num green">${noWeb}</div>
-      <div class="summary-label">No Website</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-num" style="color:var(--muted)">${hasWeb}</div>
-      <div class="summary-label">Has Website</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-num yellow">${allResults.length}</div>
-      <div class="summary-label">Total Found</div>
-    </div>
+    <div class="summary-card"><div class="summary-num green">${noWeb}</div><div class="summary-label">No Website</div></div>
+    <div class="summary-card"><div class="summary-num muted">${hasWeb}</div><div class="summary-label">Has Website</div></div>
+    <div class="summary-card"><div class="summary-num yellow">${allResults.length}</div><div class="summary-label">Total Found</div></div>
+    <div class="summary-card"><div class="summary-num yellow">${cats}</div><div class="summary-label">Categories</div></div>
   `;
 }
 
-function getFilteredResults() {
-  return activeFilter === 'no-website'
-    ? allResults.filter(r => !r.hasWebsite)
-    : allResults;
+function getFiltered() {
+  return activeFilter === 'no-website' ? allResults.filter(r => !r.hasWebsite) : allResults;
 }
 
 function renderResults() {
-  const filtered = getFilteredResults();
+  const filtered = getFiltered();
   const noWeb = allResults.filter(r => !r.hasWebsite).length;
 
   document.getElementById('statusText').innerHTML = activeFilter === 'no-website'
-    ? `Showing <span class="hl-green">${noWeb} businesses without a website</span>`
-    : `Showing all <span class="hl">${allResults.length} businesses</span>`;
+    ? `<span class="hl-green">${noWeb} leads</span> without a website in ${currentCity}`
+    : `All <span class="hl">${allResults.length} businesses</span> in ${currentCity}`;
 
   const container = document.getElementById('results');
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div>All businesses in this search have websites.</div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div>No results to show.</div>`;
     return;
   }
 
   container.innerHTML = filtered.map((r, i) => `
-    <div class="result-card ${r.hasWebsite ? 'has-website' : 'no-website'}" style="animation-delay:${i * 0.03}s">
+    <div class="result-card ${r.hasWebsite ? 'has-website' : 'no-website'}" style="animation-delay:${Math.min(i,30)*0.02}s">
       <div>
         <div class="biz-name">${escHtml(r.name)}</div>
         <div class="biz-meta">
-          ${r.types ? `<span class="biz-type">${escHtml(r.types)}</span>` : ''}
+          <span class="biz-cat">${escHtml(r.category)}</span>
           ${r.rating ? `<span class="biz-rating">★ ${r.rating} (${r.reviews})</span>` : ''}
           ${r.phone ? `<span class="biz-phone">${escHtml(r.phone)}</span>` : ''}
         </div>
         ${r.address ? `<div class="biz-address">${escHtml(r.address)}</div>` : ''}
         ${!r.hasWebsite ? `
         <div class="copy-btns">
-          <button class="btn-copy btn-copy-text" onclick="copyText(this, ${i})">📱 Copy Text</button>
-          <button class="btn-copy btn-copy-email" onclick="copyEmail(this, ${i})">✉️ Copy Email</button>
+          <button class="btn-copy btn-copy-text" onclick="copyText(this,${i})">📱 Copy Text</button>
+          <button class="btn-copy btn-copy-email" onclick="copyEmail(this,${i})">✉️ Copy Email</button>
         </div>` : ''}
       </div>
       <div class="card-actions">
@@ -576,7 +641,7 @@ function renderResults() {
 }
 
 function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function buildText(r) {
@@ -590,8 +655,9 @@ Please let me know, I appreciate your time!`;
 }
 
 function buildEmail(r) {
-  const subject = `Quick question about ${r.name}`;
-  const body = `Hi there,
+  return {
+    subject: `Quick question about ${r.name}`,
+    body: `Hi there,
 
 My name is Jayce — it's great to meet you! I came across your info on Google Maps and noticed ${r.name} didn't have a website listed, so I wanted to reach out.
 
@@ -603,12 +669,12 @@ Please let me know either way — I appreciate your time!
 
 Jayce
 JW Digital Agency | Colleyville, TX
-jwdigitalagency.netlify.app`;
-  return { subject, body };
+jwdigitalagency.netlify.app`
+  };
 }
 
 function copyText(btn, idx) {
-  const r = getFilteredResults()[idx];
+  const r = getFiltered()[idx];
   if (!r) return;
   navigator.clipboard.writeText(buildText(r)).then(() => {
     btn.textContent = '✓ Copied!';
@@ -618,7 +684,7 @@ function copyText(btn, idx) {
 }
 
 function copyEmail(btn, idx) {
-  const r = getFilteredResults()[idx];
+  const r = getFiltered()[idx];
   if (!r) return;
   const { subject, body } = buildEmail(r);
   navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`).then(() => {
@@ -629,17 +695,32 @@ function copyEmail(btn, idx) {
 }
 
 function exportCSV() {
-  const rows = getFilteredResults();
+  const rows = getFiltered();
   if (!rows.length) return;
-  const header = ['Name','Phone','Address','Rating','Reviews','Types','Has Website','Maps URL'];
-  const lines = [header, ...rows.map(r => [
-    r.name, r.phone, r.address, r.rating || '', r.reviews, r.types,
-    r.hasWebsite ? 'Yes' : 'No', r.mapsUrl
-  ].map(v => `"${String(v).replace(/"/g,'""')}"`))];
-  const blob = new Blob([lines.map(l => l.join(',')).join('\n')], { type: 'text/csv' });
+
+  const headers = ['Business Name','Category','Phone','Address','Rating','Reviews','Has Website','Maps URL','Text Message','Email Subject','Email Body'];
+
+  const lines = [
+    headers,
+    ...rows.map(r => {
+      const { subject, body } = buildEmail(r);
+      return [
+        r.name, r.category, r.phone, r.address,
+        r.rating, r.reviews,
+        r.hasWebsite ? 'Yes' : 'No',
+        r.mapsUrl,
+        r.hasWebsite ? '' : buildText(r),
+        r.hasWebsite ? '' : subject,
+        r.hasWebsite ? '' : body
+      ].map(v => `"${String(v||'').replace(/"/g,'""')}"`);
+    })
+  ];
+
+  const csv = lines.map(l => l.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'no-website-leads.csv';
+  a.download = `leads-${currentCity.replace(/\s+/g,'-').toLowerCase()}.csv`;
   a.click();
 }
 
