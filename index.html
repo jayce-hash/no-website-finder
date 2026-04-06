@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No-Website Lead Finder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0e0e10;
+    --surface: #18181c;
+    --border: #2a2a30;
+    --accent: #f0ff44;
+    --text: #f0efe8;
+    --muted: #6b6b78;
+    --success: #44ffb0;
+    --danger: #ff4466;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  header h1 span { color: var(--accent); }
+
+  .badge {
+    background: var(--accent);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 36px 24px; }
+
+  .search-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+
+  input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    padding: 11px 14px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .btn-search {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .btn-search:hover { opacity: 0.88; }
+  .btn-search:active { transform: scale(0.97); }
+  .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    min-height: 28px;
+  }
+
+  .status-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+  .status-text .hl { color: var(--accent); font-weight: 500; }
+  .status-text .hl-green { color: var(--success); font-weight: 500; }
+
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .filter-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .filter-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .progress-wrap.show { display: block; }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .progress-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .results-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    transition: border-color 0.15s;
+    animation: slideIn 0.2s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card:hover { border-color: #3a3a44; }
+  .result-card.has-website { opacity: 0.35; }
+  .result-card.no-website { border-left: 3px solid var(--success); }
+
+  .biz-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .biz-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  .biz-type, .biz-rating, .biz-phone {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .biz-phone { color: var(--text); }
+
+  .biz-address {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 3px;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  .tag-no-website {
+    background: rgba(68, 255, 176, 0.12);
+    color: var(--success);
+    border: 1px solid rgba(68, 255, 176, 0.25);
+  }
+
+  .tag-has-website {
+    background: rgba(107, 107, 120, 0.12);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .card-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+
+  .btn-maps {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-maps:hover { border-color: var(--accent); color: var(--accent); }
+
+  .copy-btns {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-copy-text { color: #74d4ff; border-color: rgba(116, 212, 255, 0.25); }
+  .btn-copy-text:hover { background: rgba(116, 212, 255, 0.08); border-color: rgba(116, 212, 255, 0.5); }
+
+  .btn-copy-email { color: #c4a3ff; border-color: rgba(196, 163, 255, 0.25); }
+  .btn-copy-email:hover { background: rgba(196, 163, 255, 0.08); border-color: rgba(196, 163, 255, 0.5); }
+
+  .btn-copy.copied {
+    color: var(--success) !important;
+    border-color: rgba(68, 255, 176, 0.4) !important;
+    background: rgba(68, 255, 176, 0.07) !important;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+
+  .summary-num {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-num.green { color: var(--success); }
+  .summary-num.yellow { color: var(--accent); }
+
+  .summary-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .error-msg {
+    background: rgba(255, 68, 102, 0.08);
+    border: 1px solid rgba(255, 68, 102, 0.25);
+    color: var(--danger);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .export-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .search-bar { grid-template-columns: 1fr; }
+    header { padding: 20px; }
+    .main { padding: 20px 16px; }
+    .result-card { grid-template-columns: 1fr; }
+    .card-actions { flex-direction: row; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>No-<span>Website</span> Finder</h1>
+  <span class="badge">Lead Tool</span>
+</header>
+
+<div class="main">
+  <div class="search-bar">
+    <div class="field">
+      <label>Business Category</label>
+      <input type="text" id="category" placeholder="e.g. plumber, dentist, gym" />
+    </div>
+    <div class="field">
+      <label>City</label>
+      <input type="text" id="city" placeholder="e.g. Austin TX" />
+    </div>
+    <button class="btn-search" id="searchBtn" onclick="runSearch()">Search →</button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label" id="progressLabel">Fetching results…</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="summary-strip" id="summaryStrip" style="display:none"></div>
+
+  <div class="status-bar" id="statusBar" style="display:none">
+    <div class="status-text" id="statusText"></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('no-website', this)">No Website</button>
+        <button class="filter-btn" onclick="setFilter('all', this)">All</button>
+      </div>
+      <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="results-grid" id="results">
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      Enter a category and city to find businesses without websites.
+    </div>
+  </div>
+</div>
+
+<script>
+let allResults = [];
+let activeFilter = 'no-website';
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+function setFilter(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResults();
+}
+
+function setProgress(pct, label) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+}
+
+async function runSearch() {
+  const category = document.getElementById('category').value.trim();
+  const city = document.getElementById('city').value.trim();
+
+  if (!category || !city) { showError('Please enter both a category and a city.'); return; }
+
+  showError('');
+  allResults = [];
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('summaryStrip').style.display = 'none';
+  document.getElementById('statusBar').style.display = 'none';
+  document.getElementById('progressWrap').classList.add('show');
+  document.getElementById('searchBtn').disabled = true;
+
+  setProgress(10, `Searching for "${category}" in ${city}…`);
+
+  try {
+    const query = `${category} in ${city}`;
+    const searchResp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(query)}`);
+    const searchData = await searchResp.json();
+
+    if (searchData.error) throw new Error(searchData.error);
+    if (searchData.status === 'REQUEST_DENIED') throw new Error('Google API key issue: ' + (searchData.error_message || 'REQUEST_DENIED'));
+    if (searchData.status !== 'OK' && searchData.status !== 'ZERO_RESULTS') throw new Error(`Search failed: ${searchData.status}`);
+
+    const places = searchData.results || [];
+    setProgress(30, `Found ${places.length} businesses. Fetching details…`);
+
+    const details = [];
+    for (let i = 0; i < places.length; i++) {
+      const place = places[i];
+      setProgress(30 + Math.round((i / places.length) * 60), `Checking ${i + 1} of ${places.length}: ${place.name}`);
+      try {
+        const dResp = await fetch(`/.netlify/functions/details?place_id=${encodeURIComponent(place.place_id)}`);
+        const dData = await dResp.json();
+        if (dData.result) details.push({ ...dData.result, place_id: place.place_id });
+      } catch (e) { /* skip */ }
+    }
+
+    setProgress(95, 'Filtering results…');
+    allResults = details.map(d => ({
+      name: d.name,
+      address: d.formatted_address || '',
+      phone: d.formatted_phone_number || '',
+      website: d.website || '',
+      rating: d.rating || null,
+      reviews: d.user_ratings_total || 0,
+      types: (d.types || []).filter(t => t !== 'establishment' && t !== 'point_of_interest').slice(0, 2).join(', ').replace(/_/g, ' '),
+      mapsUrl: d.url || `https://www.google.com/maps/place/?q=place_id:${d.place_id}`,
+      hasWebsite: !!d.website
+    }));
+
+    setProgress(100, 'Done!');
+    setTimeout(() => {
+      document.getElementById('progressWrap').classList.remove('show');
+      renderSummary();
+      renderResults();
+      document.getElementById('statusBar').style.display = 'flex';
+    }, 400);
+
+  } catch (err) {
+    document.getElementById('progressWrap').classList.remove('show');
+    showError(err.message || 'Something went wrong.');
+  }
+
+  document.getElementById('searchBtn').disabled = false;
+}
+
+function renderSummary() {
+  const noWeb = allResults.filter(r => !r.hasWebsite).length;
+  const hasWeb = allResults.filter(r => r.hasWebsite).length;
+  const strip = document.getElementById('summaryStrip');
+  strip.style.display = 'grid';
+  strip.innerHTML = `
+    <div class="summary-card">
+      <div class="summary-num green">${noWeb}</div>
+      <div class="summary-label">No Website</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-num" style="color:var(--muted)">${hasWeb}</div>
+      <div class="summary-label">Has Website</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-num yellow">${allResults.length}</div>
+      <div class="summary-label">Total Found</div>
+    </div>
+  `;
+}
+
+function getFilteredResults() {
+  return activeFilter === 'no-website'
+    ? allResults.filter(r => !r.hasWebsite)
+    : allResults;
+}
+
+function renderResults() {
+  const filtered = getFilteredResults();
+  const noWeb = allResults.filter(r => !r.hasWebsite).length;
+
+  document.getElementById('statusText').innerHTML = activeFilter === 'no-website'
+    ? `Showing <span class="hl-green">${noWeb} businesses without a website</span>`
+    : `Showing all <span class="hl">${allResults.length} businesses</span>`;
+
+  const container = document.getElementById('results');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div>All businesses in this search have websites.</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((r, i) => `
+    <div class="result-card ${r.hasWebsite ? 'has-website' : 'no-website'}" style="animation-delay:${i * 0.03}s">
+      <div>
+        <div class="biz-name">${escHtml(r.name)}</div>
+        <div class="biz-meta">
+          ${r.types ? `<span class="biz-type">${escHtml(r.types)}</span>` : ''}
+          ${r.rating ? `<span class="biz-rating">★ ${r.rating} (${r.reviews})</span>` : ''}
+          ${r.phone ? `<span class="biz-phone">${escHtml(r.phone)}</span>` : ''}
+        </div>
+        ${r.address ? `<div class="biz-address">${escHtml(r.address)}</div>` : ''}
+        ${!r.hasWebsite ? `
+        <div class="copy-btns">
+          <button class="btn-copy btn-copy-text" onclick="copyText(this, ${i})">📱 Copy Text</button>
+          <button class="btn-copy btn-copy-email" onclick="copyEmail(this, ${i})">✉️ Copy Email</button>
+        </div>` : ''}
+      </div>
+      <div class="card-actions">
+        <span class="tag ${r.hasWebsite ? 'tag-has-website' : 'tag-no-website'}">${r.hasWebsite ? 'Has Website' : 'No Website'}</span>
+        <a class="btn-maps" href="${r.mapsUrl}" target="_blank">Maps ↗</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildText(r) {
+  return `Hi, is this ${r.name}?
+
+My name is Jayce — it's great to meet you! I came across your info on Google Maps and noticed you didn't have a website listed, so I wanted to reach out.
+
+I run a small web design studio out of Colleyville, TX. I was wondering if you'd want a website for your business? If you're interested, I can put something together in 20 minutes and send it over so you can see exactly what it would look like — no commitment at all. I can send some examples of my work too.
+
+Please let me know, I appreciate your time!`;
+}
+
+function buildEmail(r) {
+  const subject = `Quick question about ${r.name}`;
+  const body = `Hi there,
+
+My name is Jayce — it's great to meet you! I came across your info on Google Maps and noticed ${r.name} didn't have a website listed, so I wanted to reach out.
+
+I run a small web design studio out of Colleyville, TX. I was wondering if you'd want a website for your business? If you're interested, I can put something together in 20 minutes and send it over so you can see exactly what it would look like — no commitment at all. I can send some examples of my past work too so you know what to expect.
+
+You can also learn more about what I offer at jwdigitalagency.netlify.app.
+
+Please let me know either way — I appreciate your time!
+
+Jayce
+JW Digital Agency | Colleyville, TX
+jwdigitalagency.netlify.app`;
+  return { subject, body };
+}
+
+function copyText(btn, idx) {
+  const r = getFilteredResults()[idx];
+  if (!r) return;
+  navigator.clipboard.writeText(buildText(r)).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📱 Copy Text'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyEmail(btn, idx) {
+  const r = getFilteredResults()[idx];
+  if (!r) return;
+  const { subject, body } = buildEmail(r);
+  navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '✉️ Copy Email'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function exportCSV() {
+  const rows = getFilteredResults();
+  if (!rows.length) return;
+  const header = ['Name','Phone','Address','Rating','Reviews','Types','Has Website','Maps URL'];
+  const lines = [header, ...rows.map(r => [
+    r.name, r.phone, r.address, r.rating || '', r.reviews, r.types,
+    r.hasWebsite ? 'Yes' : 'No', r.mapsUrl
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`))];
+  const blob = new Blob([lines.map(l => l.join(',')).join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'no-website-leads.csv';
+  a.click();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+</script>
+</body>
+</html>
