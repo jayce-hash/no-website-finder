@@ -12,11 +12,10 @@ exports.handler = async (event) => {
 
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const fetchPage = async (url, retries = 3) => {
+  const fetchPage = async (url, retries = 4) => {
     for (let i = 0; i < retries; i++) {
       const resp = await fetch(url);
       const data = await resp.json();
-      // INVALID_REQUEST on a page token just means it's not ready yet — retry
       if (data.status === 'INVALID_REQUEST' && i < retries - 1) {
         await sleep(2500);
         continue;
@@ -51,7 +50,6 @@ exports.handler = async (event) => {
         };
       }
 
-      // ZERO_RESULTS on first page is fine — just return empty
       if (data.status === 'ZERO_RESULTS' && pageCount === 0) {
         return {
           statusCode: 200,
