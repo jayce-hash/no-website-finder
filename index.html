@@ -461,16 +461,25 @@ async function runSearch() {
     const places = searchData.results || [];
     setProgress(30, `Found ${places.length} businesses. Fetching details…`);
 
-    const details = [];
-    for (let i = 0; i < places.length; i++) {
-      const place = places[i];
-      setProgress(30 + Math.round((i / places.length) * 60), `Checking ${i + 1} of ${places.length}: ${place.name}`);
+    setProgress(30, `Found ${places.length} businesses. Fetching details…`);
+
+const chunkSize = 10;
+const details = [];
+
+for (let i = 0; i < places.length; i += chunkSize) {
+  const chunk = places.slice(i, i + chunkSize);
+  const chunkResults = await Promise.all(
+    chunk.map(async (place) => {
       try {
         const dResp = await fetch(`/.netlify/functions/details?place_id=${encodeURIComponent(place.place_id)}`);
         const dData = await dResp.json();
-        if (dData.result) details.push({ ...dData.result, place_id: place.place_id });
-      } catch (e) { /* skip */ }
-    }
+        return dData.result ? { ...dData.result, place_id: place.place_id } : null;
+      } catch (e) { return null; }
+    })
+  );
+  chunkResults.forEach(r => { if (r) details.push(r); });
+  setProgress(30 + Math.round(((i + chunkSize) / places.length) * 60), `Checked ${Math.min(i + chunkSize, places.length)} of ${places.length}…`);
+}
 
     setProgress(95, 'Filtering results…');
     allResults = details.map(d => ({
