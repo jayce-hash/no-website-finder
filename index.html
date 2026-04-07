@@ -3,61 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contractor Lead Scout</title>
+<title>Thorough Contractor Lead Scout</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-  :root { --bg: #0e0e10; --surface: #18181c; --border: #2a2a30; --accent: #f0ff44; --text: #f0efe8; --muted: #6b6b78; --success: #44ffb0; }
+  
+  :root { 
+    --bg: #0e0e10; 
+    --surface: #18181c; 
+    --border: #2a2a30; 
+    --accent: #f0ff44; 
+    --text: #f0efe8; 
+    --muted: #6b6b78; 
+    --success: #44ffb0; 
+    --link: #74d4ff;
+  }
+  
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; }
-  header { padding: 25px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  header { padding: 25px 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
   header h1 { font-size: 20px; font-weight: 800; }
   header h1 span { color: var(--accent); }
+  
   .main { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
   
   .search-box { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; }
   label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); display: block; margin-bottom: 8px; }
-  input { background: #222226; border: 1px solid var(--border); color: #fff; font-family: 'DM Mono', monospace; padding: 12px; border-radius: 6px; width: 100%; margin-bottom: 15px; outline: none; }
+  input { background: #222226; border: 1px solid var(--border); color: #fff; font-family: 'DM Mono', monospace; padding: 12px; border-radius: 6px; width: 100%; margin-bottom: 15px; outline: none; transition: 0.2s;}
   input:focus { border-color: var(--accent); }
   
-  .btn-run { background: var(--accent); color: #000; border: none; font-weight: 700; padding: 12px 24px; border-radius: 6px; cursor: pointer; width: 100%; font-family: 'Syne'; }
+  .btn-run { background: var(--accent); color: #000; border: none; font-weight: 700; padding: 12px 24px; border-radius: 6px; cursor: pointer; width: 100%; font-family: 'Syne'; transition: 0.2s; }
+  .btn-run:hover { opacity: 0.9; }
   .btn-run:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .niche-pills { display: flex; gap: 8px; margin-bottom: 20px; }
-  .niche-pill { font-size: 11px; padding: 5px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
-  .niche-pill.active { border-color: var(--accent); color: var(--accent); }
+  .niche-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .niche-pill { font-size: 11px; padding: 5px 12px; border-radius: 20px; background: rgba(240,255,68,0.05); border: 1px solid var(--accent); color: var(--accent); font-weight: 600; }
 
   .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin: 20px 0; display: none; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
 
   .results-grid { display: grid; gap: 10px; }
-  .card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
   .card.no-web { border-left: 3px solid var(--success); }
+  
   .biz-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
   .biz-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
-  .tag { font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 3px; text-transform: uppercase; }
-  .tag-no { background: rgba(68, 255, 176, 0.1); color: var(--success); }
+  
+  .actions { display: flex; gap: 10px; align-items: center; }
+  .tag { font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 3px; text-transform: uppercase; }
+  .tag-no { background: rgba(68, 255, 176, 0.1); color: var(--success); border: 1px solid rgba(68, 255, 176, 0.2); }
+  
+  .btn-link { font-size: 11px; font-weight: 600; color: var(--link); text-decoration: none; border: 1px solid rgba(116, 212, 255, 0.3); padding: 4px 10px; border-radius: 4px; transition: 0.2s;}
+  .btn-link:hover { background: rgba(116, 212, 255, 0.1); border-color: var(--link); }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>High-Value <span>Contractor</span> Scout</h1>
-  <div id="stats" style="font-family:'DM Mono'; font-size:12px; color:var(--success)"></div>
+  <h1>Thorough <span>Contractor</span> Scout</h1>
+  <div id="stats" style="font-family:'DM Mono'; font-size:12px; color:var(--success)">0 LEADS FOUND</div>
 </header>
 
 <div class="main">
   <div class="search-box">
     <label>Target Cities (Comma Separated)</label>
-    <input type="text" id="cities" placeholder="Gainesville TX, Denton TX, Celina TX">
+    <input type="text" id="cities" placeholder="e.g. Grapevine TX, Southlake TX, Keller TX">
     
-    <label>Focused Niches</label>
+    <label>Expanded Search Synonyms (Auto-Applied)</label>
     <div class="niche-pills">
-      <span class="niche-pill active">Roofing</span>
-      <span class="niche-pill active">Landscaping</span>
-      <span class="niche-pill active">General Contractor</span>
+      <span class="niche-pill">Roofing Contractor</span>
+      <span class="niche-pill">Metal Roofing</span>
+      <span class="niche-pill">Roof Repair</span>
+      <span class="niche-pill">Landscaping</span>
+      <span class="niche-pill">Lawn Care</span>
+      <span class="niche-pill">Tree Service</span>
+      <span class="niche-pill">General Contractor</span>
+      <span class="niche-pill">Home Builder</span>
+      <span class="niche-pill">Remodeling</span>
     </div>
 
-    <button class="btn-run" id="runBtn" onclick="startGlobalSearch()">Start Extensive Search →</button>
+    <button class="btn-run" id="runBtn" onclick="startGlobalSearch()">Run Thorough Search →</button>
   </div>
 
   <div class="progress-bar" id="pBar"><div class="progress-fill" id="pFill"></div></div>
@@ -67,12 +91,19 @@
 </div>
 
 <script>
-const NICHES = ['roofing contractor', 'landscaping company', 'general contractor'];
+// 1. The Niche Multiplier (Expanded search terms for thoroughness)
+const NICHES = [
+  'roofing contractor', 'metal roofing', 'roof repair service',
+  'landscaping company', 'lawn care service', 'tree service',
+  'general contractor', 'home builder', 'remodeling contractor'
+];
+
 let allLeads = [];
+let seenPlaceIds = new Set(); // Prevent duplicates if multiple keywords find the same business
 
 async function startGlobalSearch() {
   const cityInput = document.getElementById('cities').value;
-  if(!cityInput) return alert('Enter at least one city');
+  if(!cityInput) return alert('Please enter at least one city.');
   
   const cities = cityInput.split(',').map(c => c.trim());
   const runBtn = document.getElementById('runBtn');
@@ -81,6 +112,7 @@ async function startGlobalSearch() {
   const status = document.getElementById('status');
   
   allLeads = [];
+  seenPlaceIds.clear(); // Reset duplicates tracker
   runBtn.disabled = true;
   pBar.style.display = 'block';
   document.getElementById('results').innerHTML = '';
@@ -89,11 +121,13 @@ async function startGlobalSearch() {
   let currentStep = 0;
 
   for (const city of cities) {
+    if (!city) continue;
+    
     for (const niche of NICHES) {
       currentStep++;
       let pct = (currentStep / totalSteps) * 100;
       pFill.style.width = pct + '%';
-      status.innerText = `Searching ${niche} in ${city}...`;
+      status.innerText = `Deep Scanning: ${niche} in ${city}...`;
 
       try {
         const resp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(niche + ' in ' + city)}`);
@@ -101,18 +135,28 @@ async function startGlobalSearch() {
         
         if (data.results) {
           for (const place of data.results) {
-            // Get deeper details to check website/phone
+            
+            // Prevent duplicate entries
+            if (seenPlaceIds.has(place.place_id)) continue;
+            seenPlaceIds.add(place.place_id);
+
+            // Filter out permanently closed businesses immediately
+            if (place.business_status === 'CLOSED_PERMANENTLY') continue;
+
             const dResp = await fetch(`/.netlify/functions/details?place_id=${place.place_id}`);
             const dData = await dResp.json();
             const res = dData.result;
             
+            // Only capture businesses without a website
             if (res && !res.website) {
               const lead = {
                 name: res.name,
                 phone: res.formatted_phone_number || 'No Phone',
                 niche: niche,
                 city: city,
-                rating: res.rating || 'N/A'
+                rating: res.rating || 'New/None',
+                reviews: res.user_ratings_total || 0,
+                place_id: place.place_id
               };
               allLeads.push(lead);
               renderLead(lead);
@@ -120,26 +164,35 @@ async function startGlobalSearch() {
             }
           }
         }
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error('Error fetching data:', e); }
     }
   }
   
-  status.innerText = `Search Complete. Found ${allLeads.length} leads without websites.`;
+  status.innerText = `Thorough Search Complete. Found ${allLeads.length} pristine leads.`;
   runBtn.disabled = false;
+  setTimeout(() => { pBar.style.display = 'none'; }, 1000);
 }
 
 function renderLead(l) {
   const container = document.getElementById('results');
   const div = document.createElement('div');
+  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(l.name + ' ' + l.city)}`;
+  
   div.className = 'card no-web';
   div.innerHTML = `
     <div>
       <div class="biz-name">${l.name}</div>
       <div class="biz-sub">${l.niche.toUpperCase()} • ${l.city}</div>
-      <div class="biz-sub" style="color:var(--text); margin-top:5px;">${l.phone} | ★ ${l.rating}</div>
+      <div class="biz-sub" style="color:var(--text); margin-top:5px;">
+        ${l.phone} | ★ ${l.rating} (${l.reviews} reviews)
+      </div>
     </div>
-    <div class="tag tag-no">No Website</div>
+    <div class="actions">
+      <a href="${searchUrl}" target="_blank" class="btn-link">🔍 Check Web/FB</a>
+      <div class="tag tag-no">No Website</div>
+    </div>
   `;
+  // Add to top of list as they are found
   container.prepend(div);
 }
 
