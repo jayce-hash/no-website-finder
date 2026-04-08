@@ -31,7 +31,6 @@ font-family: ‘Syne’, sans-serif;
 min-height: 100vh;
 }
 
-/* ── HEADER ─────────────────────────────────────── */
 header {
 padding: 22px 40px;
 border-bottom: 1px solid var(–border);
@@ -67,10 +66,8 @@ color: var(–muted);
 
 .stat-pill span { color: var(–success); font-weight: 500; }
 
-/* ── LAYOUT ─────────────────────────────────────── */
 .main { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
 
-/* ── SEARCH BOX ─────────────────────────────────── */
 .panel {
 background: var(–surface);
 border: 1px solid var(–border);
@@ -113,10 +110,8 @@ transition: border-color 0.2s;
 }
 
 input:focus, select:focus { border-color: var(–accent); }
-
 select option { background: #0f1014; }
 
-/* ── AGE FILTER ──────────────────────────────────── */
 .filter-row {
 display: grid;
 grid-template-columns: 1fr 1fr;
@@ -150,7 +145,6 @@ background: var(–gold);
 flex-shrink: 0;
 }
 
-/* ── NICHE PILLS ──────────────────────────────────── */
 .niche-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
 
 .niche-pill {
@@ -163,7 +157,6 @@ color: var(–accent);
 font-weight: 600;
 }
 
-/* ── BUTTON ──────────────────────────────────────── */
 .btn-run {
 background: var(–accent);
 color: #000;
@@ -183,7 +176,6 @@ transition: opacity 0.2s, transform 0.1s;
 .btn-run:active { transform: scale(0.99); }
 .btn-run:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* ── PROGRESS ──────────────────────────────────────── */
 .progress-wrap { margin: 18px 0 8px; display: none; }
 
 .progress-bar {
@@ -208,42 +200,6 @@ color: var(–muted);
 min-height: 16px;
 }
 
-/* ── SORT BAR ──────────────────────────────────────── */
-.sort-bar {
-display: flex;
-align-items: center;
-gap: 10px;
-margin-bottom: 14px;
-flex-wrap: wrap;
-}
-
-.sort-bar span {
-font-size: 10px;
-font-weight: 700;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-color: var(–muted);
-}
-
-.sort-btn {
-font-size: 11px;
-font-family: ‘DM Mono’, monospace;
-background: var(–surface);
-border: 1px solid var(–border);
-color: var(–muted);
-padding: 4px 12px;
-border-radius: 5px;
-cursor: pointer;
-transition: 0.15s;
-}
-
-.sort-btn.active, .sort-btn:hover {
-border-color: var(–accent);
-color: var(–accent);
-background: rgba(240,255,68,0.06);
-}
-
-/* ── RESULTS ──────────────────────────────────────── */
 .results-grid { display: grid; gap: 10px; }
 
 .card {
@@ -290,30 +246,10 @@ padding: 3px 9px;
 border-radius: 4px;
 }
 
-.chip-age {
-background: rgba(255,204,68,0.1);
-color: var(–gold);
-border: 1px solid rgba(255,204,68,0.2);
-}
-
-.chip-reviews {
-background: rgba(116,212,255,0.08);
-color: var(–link);
-border: 1px solid rgba(116,212,255,0.2);
-}
-
-.chip-rating {
-background: rgba(61,255,160,0.08);
-color: var(–success);
-border: 1px solid rgba(61,255,160,0.2);
-}
-
-.chip-score {
-background: rgba(240,255,68,0.1);
-color: var(–accent);
-border: 1px solid rgba(240,255,68,0.3);
-font-weight: 700;
-}
+.chip-age { background: rgba(255,204,68,0.1); color: var(–gold); border: 1px solid rgba(255,204,68,0.2); }
+.chip-reviews { background: rgba(116,212,255,0.08); color: var(–link); border: 1px solid rgba(116,212,255,0.2); }
+.chip-rating { background: rgba(61,255,160,0.08); color: var(–success); border: 1px solid rgba(61,255,160,0.2); }
+.chip-score { background: rgba(240,255,68,0.1); color: var(–accent); border: 1px solid rgba(240,255,68,0.3); font-weight: 700; }
 
 .tag-noweb {
 font-size: 9px;
@@ -349,7 +285,6 @@ white-space: nowrap;
 
 .btn-link:hover { background: rgba(116,212,255,0.08); border-color: var(–link); }
 
-/* ── EMPTY STATE ──────────────────────────────────── */
 .empty {
 text-align: center;
 padding: 60px 20px;
@@ -392,8 +327,6 @@ flex-shrink: 0;
 </header>
 
 <div class="main">
-
-  <!-- SEARCH PANEL -->
 
   <div class="panel">
     <div class="panel-title">Search Parameters</div>
@@ -442,14 +375,10 @@ flex-shrink: 0;
 
   </div>
 
-  <!-- PROGRESS -->
-
   <div class="progress-wrap" id="pWrap">
     <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
     <div id="status"></div>
   </div>
-
-  <!-- RESULTS HEADER -->
 
   <div id="resultsHeader" style="display:none; margin-bottom:12px;">
     <div class="legend">
@@ -473,12 +402,9 @@ const NICHES = [
 let allLeads = [];
 let seenPlaceIds = new Set();
 
-// ── LEAD SCORING ──────────────────────────────────────────────────────────────
-// Score is a weighted signal of "how established + how cold to the web"
-// Higher = better target
 function scoreLead(reviews, rating) {
-  const reviewScore = Math.min(reviews / 200, 1) * 60;   // up to 60pts for review volume
-  const ratingScore = ((rating || 3) / 5) * 40;          // up to 40pts for quality
+  const reviewScore = Math.min(reviews / 200, 1) * 60;
+  const ratingScore = ((rating || 3) / 5) * 40;
   return Math.round(reviewScore + ratingScore);
 }
 
@@ -494,7 +420,6 @@ function tierLabel(reviews) {
   return 'Active';
 }
 
-// ── SEARCH ────────────────────────────────────────────────────────────────────
 async function startSearch() {
   const cityInput = document.getElementById('cities').value.trim();
   if (!cityInput) return alert('Please enter at least one city.');
@@ -544,14 +469,10 @@ async function startSearch() {
           const res = dData.result;
           if (!res) continue;
 
-          // ── CORE FILTERS ──────────────────────────────────────────────────
-          // 1. Must have NO website
           if (res.website) continue;
 
-          // 2. Must meet minimum review threshold (longevity proxy)
           const reviews = res.user_ratings_total || 0;
           if (reviews < minReviews) continue;
-          // ─────────────────────────────────────────────────────────────────
 
           const rating = res.rating || null;
           const score = scoreLead(reviews, rating);
@@ -567,7 +488,7 @@ async function startSearch() {
           };
 
           allLeads.push(lead);
-          renderLeads(); // re-render sorted on each addition
+          renderLeads();
           resultsHeader.style.display = 'block';
           updateStats();
         }
@@ -586,13 +507,12 @@ async function startSearch() {
   setTimeout(() => { pWrap.style.display = 'none'; }, 1200);
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
 function getSorted() {
   const mode = document.getElementById('sortMode').value;
   return [...allLeads].sort((a, b) => {
     if (mode === 'reviews') return b.reviews - a.reviews;
     if (mode === 'rating') return (b.rating === '—' ? 0 : b.rating) - (a.rating === '—' ? 0 : a.rating);
-    return b.score - a.score; // default: score
+    return b.score - a.score;
   });
 }
 
@@ -629,7 +549,6 @@ function renderLeads() {
   }
 }
 
-// Re-render on sort change
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sortMode').addEventListener('change', renderLeads);
 });
