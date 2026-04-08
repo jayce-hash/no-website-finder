@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Old Guard Scout</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
 –bg: #0b0c0e;
@@ -299,7 +299,6 @@ align-items: center;
 }
 
 .legend-item { display: flex; align-items: center; gap: 6px; }
-
 .legend-bar { width: 10px; height: 16px; border-radius: 2px; flex-shrink: 0; }
 </style>
 
@@ -315,7 +314,6 @@ align-items: center;
 </header>
 
 <div class="main">
-
   <div class="panel">
     <div class="panel-title">Search Parameters</div>
 
@@ -343,7 +341,7 @@ align-items: center;
   </div>
 </div>
 
-<div class="age-badge">No website filter active — every result is a verified no-web business</div>
+<div class="age-badge">No website filter active - every result is a verified no-web business</div>
 
 <label>Search Categories (All Applied)</label>
 <div class="niche-pills">
@@ -358,7 +356,7 @@ align-items: center;
   <span class="niche-pill">Remodeling</span>
 </div>
 
-<button class="btn-run" id="runBtn" onclick="startSearch()">Hunt Old-Guard Leads →</button>
+<button class="btn-run" id="runBtn" onclick="startSearch()">Hunt Old-Guard Leads</button>
 ```
 
   </div>
@@ -370,9 +368,9 @@ align-items: center;
 
   <div id="resultsHeader" style="display:none; margin-bottom:12px;">
     <div class="legend">
-      <div class="legend-item"><div class="legend-bar" style="background:var(--gold)"></div> Veteran (50+ reviews)</div>
-      <div class="legend-item"><div class="legend-bar" style="background:var(--accent)"></div> Established (25–49)</div>
-      <div class="legend-item"><div class="legend-bar" style="background:var(--success)"></div> Active (10–24)</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#ffcc44"></div> Veteran (50+ reviews)</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#f0ff44"></div> Established (25-49)</div>
+      <div class="legend-item"><div class="legend-bar" style="background:#3dffa0"></div> Active (10-24)</div>
     </div>
   </div>
 
@@ -381,18 +379,24 @@ align-items: center;
 </div>
 
 <script>
-const NICHES = [
-  'roofing contractor', 'metal roofing', 'roof repair service',
-  'landscaping company', 'lawn care service', 'tree service',
-  'general contractor', 'home builder', 'remodeling contractor'
+var NICHES = [
+  'roofing contractor',
+  'metal roofing',
+  'roof repair service',
+  'landscaping company',
+  'lawn care service',
+  'tree service',
+  'general contractor',
+  'home builder',
+  'remodeling contractor'
 ];
 
-let allLeads = [];
-let seenPlaceIds = new Set();
+var allLeads = [];
+var seenPlaceIds = {};
 
 function scoreLead(reviews, rating) {
-  const reviewScore = Math.min(reviews / 200, 1) * 60;
-  const ratingScore = ((rating || 3) / 5) * 40;
+  var reviewScore = Math.min(reviews / 200, 1) * 60;
+  var ratingScore = ((rating || 3) / 5) * 40;
   return Math.round(reviewScore + ratingScore);
 }
 
@@ -409,22 +413,22 @@ function tierLabel(reviews) {
 }
 
 async function startSearch() {
-  const cityInput = document.getElementById('cities').value.trim();
-  if (!cityInput) return alert('Please enter at least one city.');
+  var cityInput = document.getElementById('cities').value.trim();
+  if (!cityInput) { alert('Please enter at least one city.'); return; }
 
-  const cities = cityInput.split(',').map(c => c.trim()).filter(Boolean);
-  const minReviews = parseInt(document.getElementById('minReviews').value);
+  var cities = cityInput.split(',').map(function(c) { return c.trim(); }).filter(Boolean);
+  var minReviews = parseInt(document.getElementById('minReviews').value);
 
-  const runBtn = document.getElementById('runBtn');
-  const pWrap = document.getElementById('pWrap');
-  const pFill = document.getElementById('pFill');
-  const status = document.getElementById('status');
-  const resultsEl = document.getElementById('results');
-  const empty = document.getElementById('empty');
-  const resultsHeader = document.getElementById('resultsHeader');
+  var runBtn = document.getElementById('runBtn');
+  var pWrap = document.getElementById('pWrap');
+  var pFill = document.getElementById('pFill');
+  var status = document.getElementById('status');
+  var resultsEl = document.getElementById('results');
+  var empty = document.getElementById('empty');
+  var resultsHeader = document.getElementById('resultsHeader');
 
   allLeads = [];
-  seenPlaceIds.clear();
+  seenPlaceIds = {};
   runBtn.disabled = true;
   pWrap.style.display = 'block';
   resultsEl.innerHTML = '';
@@ -432,103 +436,122 @@ async function startSearch() {
   resultsHeader.style.display = 'none';
   updateStats();
 
-  const totalSteps = cities.length * NICHES.length;
-  let currentStep = 0;
+  var totalSteps = cities.length * NICHES.length;
+  var currentStep = 0;
 
-  for (const city of cities) {
-    for (const niche of NICHES) {
+  for (var ci = 0; ci < cities.length; ci++) {
+    var city = cities[ci];
+    for (var ni = 0; ni < NICHES.length; ni++) {
+      var niche = NICHES[ni];
       currentStep++;
       pFill.style.width = ((currentStep / totalSteps) * 100) + '%';
-      status.innerText = `Scanning: "${niche}" in ${city}…`;
+      status.innerText = 'Scanning: "' + niche + '" in ' + city + '...';
 
       try {
-        const resp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(niche + ' in ' + city)}`);
-        const data = await resp.json();
+        var resp = await fetch('/.netlify/functions/search?query=' + encodeURIComponent(niche + ' in ' + city));
+        var data = await resp.json();
         if (!data.results) continue;
 
-        for (const place of data.results) {
-          if (seenPlaceIds.has(place.place_id)) continue;
-          seenPlaceIds.add(place.place_id);
+        for (var pi = 0; pi < data.results.length; pi++) {
+          var place = data.results[pi];
+          if (seenPlaceIds[place.place_id]) continue;
+          seenPlaceIds[place.place_id] = true;
           if (place.business_status === 'CLOSED_PERMANENTLY') continue;
 
-          const dResp = await fetch(`/.netlify/functions/details?place_id=${place.place_id}`);
-          const dData = await dResp.json();
-          const res = dData.result;
+          var dResp = await fetch('/.netlify/functions/details?place_id=' + encodeURIComponent(place.place_id));
+          var dData = await dResp.json();
+          var res = dData.result;
           if (!res) continue;
-
           if (res.website) continue;
 
-          const reviews = res.user_ratings_total || 0;
+          var reviews = res.user_ratings_total || 0;
           if (reviews < minReviews) continue;
 
-          const rating = res.rating || null;
-          const score = scoreLead(reviews, rating);
+          var rating = res.rating || null;
+          var score = scoreLead(reviews, rating);
 
-          const lead = { name: res.name, niche, city, rating: rating || '—', reviews, score, place_id: place.place_id };
+          var lead = {
+            name: res.name,
+            niche: niche,
+            city: city,
+            rating: rating || '0',
+            reviews: reviews,
+            score: score,
+            place_id: place.place_id
+          };
+
           allLeads.push(lead);
           renderLeads();
           resultsHeader.style.display = 'block';
           updateStats();
         }
-      } catch (e) { console.error(e); }
+      } catch(e) { console.error(e); }
     }
   }
 
-  const sortedCount = allLeads.length;
-  status.innerText = sortedCount > 0
-    ? `Done — ${sortedCount} old-guard leads with no web presence found.`
-    : 'Search complete. No leads matched your filters.';
+  var sortedCount = allLeads.length;
+  if (sortedCount > 0) {
+    status.innerText = 'Done - ' + sortedCount + ' old-guard leads with no web presence found.';
+  } else {
+    status.innerText = 'Search complete. No leads matched your filters.';
+    empty.style.display = 'block';
+  }
 
-  if (sortedCount === 0) empty.style.display = 'block';
   runBtn.disabled = false;
-  setTimeout(() => { pWrap.style.display = 'none'; }, 1200);
+  setTimeout(function() { pWrap.style.display = 'none'; }, 1200);
 }
 
 function getSorted() {
-  const mode = document.getElementById('sortMode').value;
-  return [...allLeads].sort((a, b) => {
+  var mode = document.getElementById('sortMode').value;
+  var sorted = allLeads.slice();
+  sorted.sort(function(a, b) {
     if (mode === 'reviews') return b.reviews - a.reviews;
-    if (mode === 'rating') return (b.rating === '—' ? 0 : b.rating) - (a.rating === '—' ? 0 : a.rating);
+    if (mode === 'rating') return (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0);
     return b.score - a.score;
   });
+  return sorted;
 }
 
 function renderLeads() {
-  const container = document.getElementById('results');
+  var container = document.getElementById('results');
   container.innerHTML = '';
-  for (const l of getSorted()) {
-    const div = document.createElement('div');
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(l.name + ' ' + l.city)}`;
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.name + ' ' + l.city)}`;
-    div.className = `card ${tierClass(l.reviews)}`;
-    div.innerHTML = `
-      <div style="flex:1;min-width:0;">
-        <div class="biz-name">${l.name}</div>
-        <div class="biz-meta">${l.niche.toUpperCase()} &bull; ${l.city}</div>
-        <div class="score-row">
-          <span class="score-chip chip-age">${tierLabel(l.reviews)}</span>
-          <span class="score-chip chip-reviews">${l.reviews} reviews</span>
-          ${l.rating !== '—' ? `<span class="score-chip chip-rating">★ ${l.rating}</span>` : ''}
-          <span class="score-chip chip-score">Score ${l.score}</span>
-          <span class="tag-noweb">No Website</span>
-        </div>
-      </div>
-      <div class="actions">
-        <a href="${searchUrl}" target="_blank" class="btn-link">🔍 Google</a>
-        <a href="${mapsUrl}" target="_blank" class="btn-link">📍 Maps</a>
-      </div>
-    `;
+  var sorted = getSorted();
+  for (var i = 0; i < sorted.length; i++) {
+    var l = sorted[i];
+    var div = document.createElement('div');
+    var searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(l.name + ' ' + l.city);
+    var mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(l.name + ' ' + l.city);
+    div.className = 'card ' + tierClass(l.reviews);
+    var ratingChip = parseFloat(l.rating) > 0 ? '<span class="score-chip chip-rating">&#9733; ' + l.rating + '</span>' : '';
+    div.innerHTML =
+      '<div style="flex:1;min-width:0;">' +
+        '<div class="biz-name">' + l.name + '</div>' +
+        '<div class="biz-meta">' + l.niche.toUpperCase() + ' &bull; ' + l.city + '</div>' +
+        '<div class="score-row">' +
+          '<span class="score-chip chip-age">' + tierLabel(l.reviews) + '</span>' +
+          '<span class="score-chip chip-reviews">' + l.reviews + ' reviews</span>' +
+          ratingChip +
+          '<span class="score-chip chip-score">Score ' + l.score + '</span>' +
+          '<span class="tag-noweb">No Website</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="actions">' +
+        '<a href="' + searchUrl + '" target="_blank" class="btn-link">Google</a>' +
+        '<a href="' + mapsUrl + '" target="_blank" class="btn-link">Maps</a>' +
+      '</div>';
     container.appendChild(div);
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('sortMode').addEventListener('change', renderLeads);
-});
+document.getElementById('sortMode').addEventListener('change', renderLeads);
 
 function updateStats() {
   document.getElementById('count').innerText = allLeads.length;
-  document.getElementById('vetCount').innerText = allLeads.filter(l => l.reviews >= 50).length;
+  var vets = 0;
+  for (var i = 0; i < allLeads.length; i++) {
+    if (allLeads[i].reviews >= 50) vets++;
+  }
+  document.getElementById('vetCount').innerText = vets;
 }
 </script>
 
