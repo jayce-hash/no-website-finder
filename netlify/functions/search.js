@@ -1,79 +1,28 @@
-exports.handler = async (event) => {
-  const { query } = event.queryStringParameters || {};
+const https = require(‘https’);
 
-  if (!query) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Missing query" }) };
-  }
+exports.handler = async function(event) {
+const query = event.queryStringParameters && event.queryStringParameters.query;
 
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-  if (!apiKey) {
-    return { statusCode: 500, body: JSON.stringify({ error: "API key not configured" }) };
-  }
+if (!query) {
+return { statusCode: 400, body: JSON.stringify({ error: ‘Missing query parameter’ }) };
+}
 
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const key = process.env.GOOGLE_PLACES_API_KEY;
+const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${key}`;
 
-  const fetchPage = async (url, retries = 4) => {
-    for (let i = 0; i < retries; i++) {
-      const resp = await fetch(url);
-      const data = await resp.json();
-      if (data.status === 'INVALID_REQUEST' && i < retries - 1) {
-        await sleep(2500);
-        continue;
-      }
-      return data;
-    }
-  };
-
-  try {
-    let allResults = [];
-    let nextPageToken = null;
-    let pageCount = 0;
-
-    do {
-      const url = nextPageToken
-        ? `https://maps.googleapis.com/maps/api/place/textsearch/json?pagetoken=${encodeURIComponent(nextPageToken)}&key=${apiKey}`
-        : `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${apiKey}`;
-
-      if (nextPageToken) {
-        await sleep(3000);
-      }
-
-      const data = await fetchPage(url);
-
-      if (!data) break;
-
-      if (data.status === 'REQUEST_DENIED') {
-        return {
-          statusCode: 200,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: 'REQUEST_DENIED', error_message: data.error_message, results: allResults }),
-        };
-      }
-
-      if (data.status === 'ZERO_RESULTS' && pageCount === 0) {
-        return {
-          statusCode: 200,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: 'OK', results: [] }),
-        };
-      }
-
-      if (data.results && data.results.length > 0) {
-        allResults = allResults.concat(data.results);
-      }
-
-      nextPageToken = data.next_page_token || null;
-      pageCount++;
-
-    } while (nextPageToken && pageCount < 3);
-
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: 'OK', results: allResults }),
-    };
-
-  } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
-  }
+const data = await fetchJson(url);
+return { statusCode: 200, body: JSON.stringify(data) };
 };
+
+function fetchJson(url) {
+return new Promise((resolve, reject) => {
+https.get(url, (res) => {
+let raw = ‘’;
+res.on(‘data’, chunk => raw += chunk);
+res.on(‘end’, () => {
+try { resolve(JSON.parse(raw)); }
+catch (e) { reject(e); }
+});
+}).on(‘error’, reject);
+});
+}
