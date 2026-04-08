@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Old Guard Scout</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+–bg: #0b0c0e;
+–surface: #13141a;
+–border: #252630;
+–accent: #f0ff44;
+–text: #eeede6;
+–muted: #5a5a6a;
+–success: #3dffa0;
+–link: #74d4ff;
+–gold: #ffcc44;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘Syne’, sans-serif;
+min-height: 100vh;
+}
+
+header {
+padding: 22px 40px;
+border-bottom: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+position: sticky;
+top: 0;
+background: rgba(11,12,14,0.92);
+backdrop-filter: blur(12px);
+z-index: 10;
+}
+
+.logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+.logo em { color: var(–accent); font-style: normal; }
+
+#stats { display: flex; gap: 20px; font-family: ‘DM Mono’, monospace; font-size: 11px; }
+
+.stat-pill {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 5px 14px;
+color: var(–muted);
+}
+
+.stat-pill span { color: var(–success); font-weight: 500; }
+
+.main { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+
+.panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 26px;
+margin-bottom: 20px;
+}
+
+.panel-title {
+font-size: 10px;
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 18px;
+}
+
+label {
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 1.5px;
+color: var(–muted);
+display: block;
+margin-bottom: 7px;
+}
+
+input[type=“text”], select {
+background: #0f1014;
+border: 1px solid var(–border);
+color: var(–text);
+font-family: ‘DM Mono’, monospace;
+font-size: 13px;
+padding: 11px 14px;
+border-radius: 7px;
+width: 100%;
+margin-bottom: 16px;
+outline: none;
+transition: border-color 0.2s;
+}
+
+input:focus, select:focus { border-color: var(–accent); }
+select option { background: #0f1014; }
+
+.filter-row {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+margin-bottom: 16px;
+}
+
+@media (max-width: 600px) { .filter-row { grid-template-columns: 1fr; } }
+
+.age-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: rgba(255,204,68,0.07);
+border: 1px solid rgba(255,204,68,0.25);
+color: var(–gold);
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+font-weight: 500;
+padding: 4px 12px;
+border-radius: 20px;
+margin-bottom: 16px;
+}
+
+.age-badge::before {
+content: ‘’;
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(–gold);
+flex-shrink: 0;
+}
+
+.niche-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+
+.niche-pill {
+font-size: 11px;
+padding: 4px 11px;
+border-radius: 20px;
+background: rgba(240,255,68,0.04);
+border: 1px solid rgba(240,255,68,0.25);
+color: var(–accent);
+font-weight: 600;
+}
+
+.btn-run {
+background: var(–accent);
+color: #000;
+border: none;
+font-weight: 800;
+font-size: 14px;
+padding: 13px 24px;
+border-radius: 8px;
+cursor: pointer;
+width: 100%;
+font-family: ‘Syne’, sans-serif;
+letter-spacing: 0.5px;
+transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-run:hover { opacity: 0.9; }
+.btn-run:active { transform: scale(0.99); }
+.btn-run:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.progress-wrap { margin: 18px 0 8px; display: none; }
+
+.progress-bar {
+height: 3px;
+background: var(–border);
+border-radius: 3px;
+overflow: hidden;
+margin-bottom: 8px;
+}
+
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–accent), var(–success));
+width: 0%;
+transition: width 0.4s ease;
+}
+
+#status {
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+min-height: 16px;
+}
+
+.results-grid { display: grid; gap: 10px; }
+
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-left: 3px solid var(–success);
+padding: 16px 20px;
+border-radius: 10px;
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 16px;
+flex-wrap: wrap;
+animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.card.veteran { border-left-color: var(–gold); }
+.card.established { border-left-color: var(–accent); }
+
+.biz-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+
+.biz-meta {
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+margin-bottom: 6px;
+}
+
+.score-row {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+margin-top: 4px;
+}
+
+.score-chip {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+font-weight: 500;
+padding: 3px 9px;
+border-radius: 4px;
+}
+
+.chip-age { background: rgba(255,204,68,0.1); color: var(–gold); border: 1px solid rgba(255,204,68,0.2); }
+.chip-reviews { background: rgba(116,212,255,0.08); color: var(–link); border: 1px solid rgba(116,212,255,0.2); }
+.chip-rating { background: rgba(61,255,160,0.08); color: var(–success); border: 1px solid rgba(61,255,160,0.2); }
+.chip-score { background: rgba(240,255,68,0.1); color: var(–accent); border: 1px solid rgba(240,255,68,0.3); font-weight: 700; }
+
+.tag-noweb {
+font-size: 9px;
+font-weight: 800;
+padding: 3px 8px;
+border-radius: 3px;
+text-transform: uppercase;
+background: rgba(61,255,160,0.08);
+color: var(–success);
+border: 1px solid rgba(61,255,160,0.2);
+white-space: nowrap;
+}
+
+.actions {
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 8px;
+flex-shrink: 0;
+}
+
+.btn-link {
+font-size: 11px;
+font-weight: 600;
+color: var(–link);
+text-decoration: none;
+border: 1px solid rgba(116,212,255,0.25);
+padding: 5px 11px;
+border-radius: 5px;
+transition: 0.15s;
+white-space: nowrap;
+}
+
+.btn-link:hover { background: rgba(116,212,255,0.08); border-color: var(–link); }
+
+.empty {
+text-align: center;
+padding: 60px 20px;
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 13px;
+display: none;
+}
+
+.legend {
+display: flex;
+gap: 16px;
+flex-wrap: wrap;
+margin-bottom: 14px;
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+align-items: center;
+}
+
+.legend-item { display: flex; align-items: center; gap: 6px; }
+
+.legend-bar { width: 10px; height: 16px; border-radius: 2px; flex-shrink: 0; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">Old Guard <em>Scout</em></div>
+  <div id="stats">
+    <div class="stat-pill">Leads: <span id="count">0</span></div>
+    <div class="stat-pill">Veteran (50+ reviews): <span id="vetCount">0</span></div>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="panel">
+    <div class="panel-title">Search Parameters</div>
+
+```
+<label>Target Cities (Comma Separated)</label>
+<input type="text" id="cities" placeholder="e.g. Grapevine TX, Southlake TX, Keller TX">
+
+<div class="filter-row">
+  <div>
+    <label>Minimum Review Count (Longevity Signal)</label>
+    <select id="minReviews">
+      <option value="10">10+ reviews (any established biz)</option>
+      <option value="25" selected>25+ reviews (recommended)</option>
+      <option value="50">50+ reviews (veteran businesses)</option>
+      <option value="100">100+ reviews (deeply rooted)</option>
+    </select>
+  </div>
+  <div>
+    <label>Sort Results By</label>
+    <select id="sortMode">
+      <option value="score">Lead Score (best first)</option>
+      <option value="reviews">Review Count (most first)</option>
+      <option value="rating">Rating (highest first)</option>
+    </select>
+  </div>
+</div>
+
+<div class="age-badge">No website filter active — every result is a verified no-web business</div>
+
+<label>Search Categories (All Applied)</label>
+<div class="niche-pills">
+  <span class="niche-pill">Roofing Contractor</span>
+  <span class="niche-pill">Metal Roofing</span>
+  <span class="niche-pill">Roof Repair</span>
+  <span class="niche-pill">Landscaping</span>
+  <span class="niche-pill">Lawn Care</span>
+  <span class="niche-pill">Tree Service</span>
+  <span class="niche-pill">General Contractor</span>
+  <span class="niche-pill">Home Builder</span>
+  <span class="niche-pill">Remodeling</span>
+</div>
+
+<button class="btn-run" id="runBtn" onclick="startSearch()">Hunt Old-Guard Leads →</button>
+```
+
+  </div>
+
+  <div class="progress-wrap" id="pWrap">
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+    <div id="status"></div>
+  </div>
+
+  <div id="resultsHeader" style="display:none; margin-bottom:12px;">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-bar" style="background:var(--gold)"></div> Veteran (50+ reviews)</div>
+      <div class="legend-item"><div class="legend-bar" style="background:var(--accent)"></div> Established (25–49)</div>
+      <div class="legend-item"><div class="legend-bar" style="background:var(--success)"></div> Active (10–24)</div>
+    </div>
+  </div>
+
+  <div class="empty" id="empty">No leads matched your filters. Try lowering the minimum review count.</div>
+  <div class="results-grid" id="results"></div>
+</div>
+
+<script>
+const NICHES = [
+  'roofing contractor', 'metal roofing', 'roof repair service',
+  'landscaping company', 'lawn care service', 'tree service',
+  'general contractor', 'home builder', 'remodeling contractor'
+];
+
+let allLeads = [];
+let seenPlaceIds = new Set();
+
+function scoreLead(reviews, rating) {
+  const reviewScore = Math.min(reviews / 200, 1) * 60;
+  const ratingScore = ((rating || 3) / 5) * 40;
+  return Math.round(reviewScore + ratingScore);
+}
+
+function tierClass(reviews) {
+  if (reviews >= 50) return 'veteran';
+  if (reviews >= 25) return 'established';
+  return '';
+}
+
+function tierLabel(reviews) {
+  if (reviews >= 50) return 'Veteran';
+  if (reviews >= 25) return 'Established';
+  return 'Active';
+}
+
+async function startSearch() {
+  const cityInput = document.getElementById('cities').value.trim();
+  if (!cityInput) return alert('Please enter at least one city.');
+
+  const cities = cityInput.split(',').map(c => c.trim()).filter(Boolean);
+  const minReviews = parseInt(document.getElementById('minReviews').value);
+
+  const runBtn = document.getElementById('runBtn');
+  const pWrap = document.getElementById('pWrap');
+  const pFill = document.getElementById('pFill');
+  const status = document.getElementById('status');
+  const resultsEl = document.getElementById('results');
+  const empty = document.getElementById('empty');
+  const resultsHeader = document.getElementById('resultsHeader');
+
+  allLeads = [];
+  seenPlaceIds.clear();
+  runBtn.disabled = true;
+  pWrap.style.display = 'block';
+  resultsEl.innerHTML = '';
+  empty.style.display = 'none';
+  resultsHeader.style.display = 'none';
+  updateStats();
+
+  const totalSteps = cities.length * NICHES.length;
+  let currentStep = 0;
+
+  for (const city of cities) {
+    for (const niche of NICHES) {
+      currentStep++;
+      pFill.style.width = ((currentStep / totalSteps) * 100) + '%';
+      status.innerText = `Scanning: "${niche}" in ${city}…`;
+
+      try {
+        const resp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(niche + ' in ' + city)}`);
+        const data = await resp.json();
+        if (!data.results) continue;
+
+        for (const place of data.results) {
+          if (seenPlaceIds.has(place.place_id)) continue;
+          seenPlaceIds.add(place.place_id);
+          if (place.business_status === 'CLOSED_PERMANENTLY') continue;
+
+          const dResp = await fetch(`/.netlify/functions/details?place_id=${place.place_id}`);
+          const dData = await dResp.json();
+          const res = dData.result;
+          if (!res) continue;
+
+          if (res.website) continue;
+
+          const reviews = res.user_ratings_total || 0;
+          if (reviews < minReviews) continue;
+
+          const rating = res.rating || null;
+          const score = scoreLead(reviews, rating);
+
+          const lead = { name: res.name, niche, city, rating: rating || '—', reviews, score, place_id: place.place_id };
+          allLeads.push(lead);
+          renderLeads();
+          resultsHeader.style.display = 'block';
+          updateStats();
+        }
+      } catch (e) { console.error(e); }
+    }
+  }
+
+  const sortedCount = allLeads.length;
+  status.innerText = sortedCount > 0
+    ? `Done — ${sortedCount} old-guard leads with no web presence found.`
+    : 'Search complete. No leads matched your filters.';
+
+  if (sortedCount === 0) empty.style.display = 'block';
+  runBtn.disabled = false;
+  setTimeout(() => { pWrap.style.display = 'none'; }, 1200);
+}
+
+function getSorted() {
+  const mode = document.getElementById('sortMode').value;
+  return [...allLeads].sort((a, b) => {
+    if (mode === 'reviews') return b.reviews - a.reviews;
+    if (mode === 'rating') return (b.rating === '—' ? 0 : b.rating) - (a.rating === '—' ? 0 : a.rating);
+    return b.score - a.score;
+  });
+}
+
+function renderLeads() {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+  for (const l of getSorted()) {
+    const div = document.createElement('div');
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(l.name + ' ' + l.city)}`;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.name + ' ' + l.city)}`;
+    div.className = `card ${tierClass(l.reviews)}`;
+    div.innerHTML = `
+      <div style="flex:1;min-width:0;">
+        <div class="biz-name">${l.name}</div>
+        <div class="biz-meta">${l.niche.toUpperCase()} &bull; ${l.city}</div>
+        <div class="score-row">
+          <span class="score-chip chip-age">${tierLabel(l.reviews)}</span>
+          <span class="score-chip chip-reviews">${l.reviews} reviews</span>
+          ${l.rating !== '—' ? `<span class="score-chip chip-rating">★ ${l.rating}</span>` : ''}
+          <span class="score-chip chip-score">Score ${l.score}</span>
+          <span class="tag-noweb">No Website</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a href="${searchUrl}" target="_blank" class="btn-link">🔍 Google</a>
+        <a href="${mapsUrl}" target="_blank" class="btn-link">📍 Maps</a>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sortMode').addEventListener('change', renderLeads);
+});
+
+function updateStats() {
+  document.getElementById('count').innerText = allLeads.length;
+  document.getElementById('vetCount').innerText = allLeads.filter(l => l.reviews >= 50).length;
+}
+</script>
+
+</body>
+</html>
