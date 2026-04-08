@@ -4,17 +4,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contractor Lead Scout</title>
+<title>Old Guard Scout</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
 –bg: #0b0c0e;
 –surface: #13141a;
-–surface2: #1c1d25;
 –border: #252630;
 –accent: #f0ff44;
-–accent2: #ff7043;
 –text: #eeede6;
 –muted: #5a5a6a;
 –success: #3dffa0;
@@ -49,12 +47,7 @@ z-index: 10;
 .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
 .logo em { color: var(–accent); font-style: normal; }
 
-#stats {
-display: flex;
-gap: 20px;
-font-family: ‘DM Mono’, monospace;
-font-size: 11px;
-}
+#stats { display: flex; gap: 20px; font-family: ‘DM Mono’, monospace; font-size: 11px; }
 
 .stat-pill {
 background: var(–surface);
@@ -307,12 +300,7 @@ align-items: center;
 
 .legend-item { display: flex; align-items: center; gap: 6px; }
 
-.legend-bar {
-width: 10px;
-height: 16px;
-border-radius: 2px;
-flex-shrink: 0;
-}
+.legend-bar { width: 10px; height: 16px; border-radius: 2px; flex-shrink: 0; }
 </style>
 
 </head>
@@ -456,7 +444,6 @@ async function startSearch() {
       try {
         const resp = await fetch(`/.netlify/functions/search?query=${encodeURIComponent(niche + ' in ' + city)}`);
         const data = await resp.json();
-
         if (!data.results) continue;
 
         for (const place of data.results) {
@@ -477,16 +464,7 @@ async function startSearch() {
           const rating = res.rating || null;
           const score = scoreLead(reviews, rating);
 
-          const lead = {
-            name: res.name,
-            niche,
-            city,
-            rating: rating || '—',
-            reviews,
-            score,
-            place_id: place.place_id
-          };
-
+          const lead = { name: res.name, niche, city, rating: rating || '—', reviews, score, place_id: place.place_id };
           allLeads.push(lead);
           renderLeads();
           resultsHeader.style.display = 'block';
@@ -502,7 +480,6 @@ async function startSearch() {
     : 'Search complete. No leads matched your filters.';
 
   if (sortedCount === 0) empty.style.display = 'block';
-
   runBtn.disabled = false;
   setTimeout(() => { pWrap.style.display = 'none'; }, 1200);
 }
@@ -519,21 +496,17 @@ function getSorted() {
 function renderLeads() {
   const container = document.getElementById('results');
   container.innerHTML = '';
-
   for (const l of getSorted()) {
     const div = document.createElement('div');
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(l.name + ' ' + l.city)}`;
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.name + ' ' + l.city)}`;
-    const tier = tierClass(l.reviews);
-    const tierText = tierLabel(l.reviews);
-
-    div.className = `card ${tier}`;
+    div.className = `card ${tierClass(l.reviews)}`;
     div.innerHTML = `
-      <div style="flex:1; min-width:0;">
+      <div style="flex:1;min-width:0;">
         <div class="biz-name">${l.name}</div>
         <div class="biz-meta">${l.niche.toUpperCase()} &bull; ${l.city}</div>
         <div class="score-row">
-          <span class="score-chip chip-age">${tierText}</span>
+          <span class="score-chip chip-age">${tierLabel(l.reviews)}</span>
           <span class="score-chip chip-reviews">${l.reviews} reviews</span>
           ${l.rating !== '—' ? `<span class="score-chip chip-rating">★ ${l.rating}</span>` : ''}
           <span class="score-chip chip-score">Score ${l.score}</span>
